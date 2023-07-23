@@ -96,7 +96,7 @@ while True:
 		((x, y), radius) = cv2.minEnclosingCircle(c)
 		M = cv2.moments(c)
 		center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-
+		
 		# only proceed if the radius meets a minimum size
 		if radius > 10:
 			# draw the circle and centroid on the frame,
@@ -112,9 +112,14 @@ while True:
 	for i in range(1, len(pts)):
 		# if either of the tracked points are None, ignore
 		# them
-		if pts[i - 1] is None or pts[i] is None:
+		if pts[i - 1] is None or pts[i] is None or pts[-1] is None or pts[-2] is None:
 			continue
-
+		#print(pts[-1],pts[-2],"********")
+		try:
+			if pts[-1][0]==pts[-2][0] and pts[-1][1]==pts[-2][1]:
+				continue
+		except:
+			pass
 		# otherwise, compute the thickness of the line and
 		# draw the connecting lines
 		thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
@@ -155,9 +160,9 @@ while True:
 
 	
 	#debug numbers to look even cooler
-	x, y, w, h = cv2.getWindowImageRect("Frame")
-	print(f"Window size: {w}x{h}")
-	print(f"Frame size: {frame_width}x{frame_height}")
+	#x, y, w, h = cv2.getWindowImageRect("Frame")
+	#print(f"Window size: {w}x{h}")
+	#print(f"Frame size: {frame_width}x{frame_height}")
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 
